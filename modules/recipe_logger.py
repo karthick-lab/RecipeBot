@@ -1,35 +1,105 @@
-import pandas as pd
-import os
-from openpyxl import load_workbook
-from openpyxl.utils import get_column_letter
+def log_recipe(raw_text, priced_df, target_path, tray_width, tray_height, num_pieces, serving_size, cost_summary, sheet_name):
+    from openpyxl import load_workbook, Workbook
+    from openpyxl.styles import Font, PatternFill
+    import os
 
-def log_recipe(recipe, priced_df, recipe_path, tray_width_in, tray_height_in, num_pieces, piece_size, cost_summary):
-    sheet_name = recipe['title'][:31]
+    # Load or create workbook
+    if os.path.exists(target_path):
+        wb = load_workbook(target_path)
+    else:
+        wb = Workbook()
+        default_sheet = wb.active
+        if default_sheet.max_row == 1 and default_sheet["A1"].value is None:
+            wb.remove(default_sheet)
 
-    # Create initial DataFrame with formulas
-    df = pd.DataFrame(columns=["Ingredient", "Qty (g)", "PricePerKg", "TotalCost"])
-    for i, item in enumerate(recipe["ingredients"]):
-        ingredient = item["name"]
-        qty = item["qty"]
-        # Excel formula to lookup price from master sheet
-        price_formula = f'=IFERROR(VLOOKUP("{ingredient}", [ingredient_master.xlsx]Sheet1!A:B, 2, FALSE), "Unknown")'
-        total_formula = f'=IF(ISNUMBER(C{i+2}), B{i+2}/1000 * C{i+2}, "Unknown")'
-        df.loc[i] = [ingredient, qty, price_formula, total_formula]
+    # Create new sheet
+    ws = wb.create_sheet(title=sheet_name)
 
-    # Summary
-    summary_df = pd.DataFrame([{
-        "Tray Size (in)": f"{tray_width_in} x {tray_height_in}",
-        "Piece Size (cm)": piece_size,
-        "Number of Pieces": num_pieces,
-        "Raw Material Cost": f'=SUM(D2:D{len(df)+1})',
-        "Packing Cost": cost_summary["PackingCost"],
-        "Overhead": cost_summary["Overhead"],
-        "Total Cost": f'=E{len(df)+3}+E{len(df)+4}+E{len(df)+5}',
-        "Selling Price": f'=E{len(df)+6}*1.3'
-    }])
+    # Styles
+    header_fill = PatternFill(start_color="FFF2CC", end_color="FFF2CC", fill_type="solid")
+    bold_font = Font(bold=True)
 
-    # Write to Excel
-    file_exists = os.path.exists(recipe_path)
-    with pd.ExcelWriter(recipe_path, engine='openpyxl', mode='a' if file_exists else 'w') as writer:
-        df.to_excel(writer, sheet_name=sheet_name, index=False)
-        summary_df.to_excel(writer, sheet_name=sheet_name, index=False, startrow=len(df) + 3)
+    # Tray and yield info
+    ws.append(["Tray Width", tray_width])
+    ws.append(["Tray Height", tray_height])
+    ws.append(["Yield", num_pieces])
+    ws.append(["Serving Size", serving_size])
+    for row in ws.iter_rows(min_row=1, max_row=4):
+        for cell in row:
+            cell.font = bold_font
+    ws.append([])
+
+    # Ingredient pricing header
+    ws.append(["Ingredient", "Qty", "Unit", "Unit Price (₹)", "Total Cost (₹)"])
+    for cell in ws[ws.max_row]:
+        cell.fill = header_fill
+        cell.font = bold_font
+
+    # Ingredient rows
+    start_row = ws.max_row + 1
+    for row in priced_df.itertuples(index=False):
+        name = row.ingredient
+        qty = row.qty
+        unit = row.unit
+
+        if qty == 0 and name.lower() == "ingredients":
+            continue
+
+        safe_name = name.replace('"', '""')
+        if unit in ["piece", "pieces"]:
+            price_formula = f'=IFERROR(VLOOKUP("{safe_name}", ingredient_master.xlsx!A:D, 4, FALSE), 0)'
+        else:
+            price_formula = f'=IFERROR(VLOOKUP("{safe_name}", ingredient_master.xlsx!A:D, 3, FALSE)/1000, 0)'
+
+        ws.append([name, qty, unit, price_formula, None])
+        current_row = ws.max_row
+        ws[f"E{current_row}"] = f'=B{current_row} * D{current_row}'
+
+    ws.append([])
+
+    # Cost summary header
+    ws.append(["💰 Cost Summary"])
+    for cell in ws[ws.max_row]:
+        cell.fill = header_fill
+        cell.font = bold_font
+
+    summary_start = ws.max_row + 1
+    #print(f"start row: {start_row}, end row: {current_row}")
+    raw_material_formula = f'=SUM(E{start_row}:E{current_row})'
+    packing_formula = f'=B3 * 20'  # Yield is in B3
+
+    # ✅ Use dynamic operational expenses from cost_summary
+    ws.append(["Raw Material Cost", raw_material_formula])
+    ws.append(["Labor", cost_summary.get("labor", 100)])
+    ws.append(["Rent", cost_summary.get("rent", 100)])
+    ws.append(["Gas", cost_summary.get("gas", 50)])
+    ws.append(["Electricity", cost_summary.get("electricity", 50)])
+    ws.append(["Packing", packing_formula])
+
+    total_cost_row = ws.max_row + 1
+    ws.append(["Total Manufacturing Cost", f'=SUM(B{summary_start}:B{total_cost_row - 1})'])
+
+    profit_row = ws.max_row + 1
+    ws.append(["Profit (25%)", f'=B{total_cost_row} * 0.25'])
+
+    selling_price_row = ws.max_row + 1
+    ws.append(["Selling Price", f'=B{total_cost_row} + B{profit_row}'])
+
+    ws.append(["Selling Price per Piece", f'=B{selling_price_row} / B3'])
+
+    for row in ws.iter_rows(min_row=summary_start - 1, max_row=ws.max_row):
+        for cell in row:
+            cell.font = bold_font
+
+    ws.append([])
+
+    # Raw recipe section
+    ws.append(["📜 Raw Recipe"])
+    for cell in ws[ws.max_row]:
+        cell.fill = header_fill
+        cell.font = bold_font
+
+    for line in raw_text.split("\n"):
+        ws.append([line])
+
+    wb.save(target_path)
