@@ -45,14 +45,16 @@ def log_recipe(raw_text, priced_df, target_path, tray_width, tray_height, num_pi
         if qty == 0 and name.lower() == "ingredients":
             continue
 
-        safe_name = name.replace('"', '""')
-        if unit in ["piece", "pieces"]:
-            price_formula = f'=IFERROR(VLOOKUP("{safe_name}", ingredient_master.xlsx!A:D, 4, FALSE), 0)'
-        else:
-            price_formula = f'=IFERROR(VLOOKUP("{safe_name}", ingredient_master.xlsx!A:D, 3, FALSE)/1000, 0)'
+        current_row = ws.max_row + 1  # Predict next row before appending
 
+        # Build the price formula
+        if unit in ["piece", "pieces"]:
+            price_formula = f'=IFERROR(VLOOKUP(A{current_row}, [ingredient_master.xlsx]Sheet1!A:D, 4, FALSE), 0)'
+        else:
+            price_formula = f'=IFERROR(VLOOKUP(A{current_row}, [ingredient_master.xlsx]Sheet1!A:D, 3, FALSE)/1000, 0)'
+
+        # Append row with formula
         ws.append([name, qty, unit, price_formula, None])
-        current_row = ws.max_row
         ws[f"E{current_row}"] = f'=B{current_row} * D{current_row}'
 
     ws.append([])
@@ -64,11 +66,10 @@ def log_recipe(raw_text, priced_df, target_path, tray_width, tray_height, num_pi
         cell.font = bold_font
 
     summary_start = ws.max_row + 1
-    #print(f"start row: {start_row}, end row: {current_row}")
-    raw_material_formula = f'=SUM(E{start_row}:E{current_row})'
+    raw_material_formula = f'=SUM(E{start_row}:E{ws.max_row})'
     packing_formula = f'=B3 * 20'  # Yield is in B3
 
-    # ✅ Use dynamic operational expenses from cost_summary
+    # Cost breakdown
     ws.append(["Raw Material Cost", raw_material_formula])
     ws.append(["Labor", cost_summary.get("labor", 100)])
     ws.append(["Rent", cost_summary.get("rent", 100)])
@@ -79,11 +80,16 @@ def log_recipe(raw_text, priced_df, target_path, tray_width, tray_height, num_pi
     total_cost_row = ws.max_row + 1
     ws.append(["Total Manufacturing Cost", f'=SUM(B{summary_start}:B{total_cost_row - 1})'])
 
+    total_cost_per_piece_row = ws.max_row + 1
+    ws.append(["Manufacturing Price per piece", f'=B{total_cost_row} / B3'])
+
     profit_row = ws.max_row + 1
-    ws.append(["Profit (25%)", f'=B{total_cost_row} * 0.25'])
+    ws.append(["Profit (25%) per piece or serving", f'=B{total_cost_per_piece_row} * 0.25'])
+
+
 
     selling_price_row = ws.max_row + 1
-    ws.append(["Selling Price", f'=B{total_cost_row} + B{profit_row}'])
+    ws.append(["Selling Price", f'=B{total_cost_row} + (B{profit_row}*B3)'])
 
     ws.append(["Selling Price per Piece", f'=B{selling_price_row} / B3'])
 

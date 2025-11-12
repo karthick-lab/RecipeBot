@@ -13,8 +13,7 @@ def build_recipe_prompt(dish_type, key_ingredients, extra_ingredients, tray_size
     context_text = f"\nContextual guidance: {verified_context}" if verified_context else ""
 
     piece_based = [
-        "eggs", "egg", "banana", "bananas", "bread slice", "lemon", "green chili",
-        "garlic clove", "paneer block", "chapati", "idli", "dosa"
+        "eggs", "egg", "banana", "bananas", "bread slice", "lemon", "paneer block", "chapati", "idli", "dosa"
     ]
     piece_instruction = ", ".join(piece_based)
 
@@ -26,7 +25,7 @@ Exclude the following dishes that have already been generated:
 
 - Core ingredients: {', '.join(key_ingredients)}
 - Optional extras: {', '.join(extra_ingredients) if extra_ingredients else 'None'}
-
+- Not mandatory to use all the ingredients use only the necessary ingredients
 Please include realistic portioning details such as:
 - Number of pieces or servings
 - Serving size in grams

@@ -14,7 +14,7 @@ from modules.recipe_logger import log_recipe
 from modules.recipe_parser import parse_gemini_response
 
 master_path = r"C:\Users\admin\Desktop\Reports\Recipe maker\ingredient_master.xlsx"
-DISH_FILE = "data/generated_dishes.txt"
+DISH_FILE = r"C:\Users\admin\Desktop\PythonProjects\RecipeBot\ui\data\generated_dishes.txt"
 
 
 class RnDBotUI:
