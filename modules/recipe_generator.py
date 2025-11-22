@@ -1,7 +1,7 @@
 import pandas as pd
 import random
 from datetime import datetime
-from prompt_builder import build_prompt
+from prompt_builder import build_recipe_prompt
 from ingredient_filter import strict_filter_by_dish_type
 
 def generate_recipe(master_path, existing_titles, mistral_generate_fn, user_dish_type, tray_size=None):
@@ -35,7 +35,7 @@ def generate_recipe(master_path, existing_titles, mistral_generate_fn, user_dish
     final_ingredients = selected_ingredients + [new_ingredient]
 
     # Build prompt using only final_ingredients
-    prompt = build_prompt(user_dish_type, selected_ingredients, [new_ingredient], tray_size)
+    prompt = build_recipe_prompt(user_dish_type, selected_ingredients, [new_ingredient], tray_size)
     mistral_response = mistral_generate_fn(prompt)
 
     if not mistral_response:

@@ -1,8 +1,17 @@
+import json
 import os
+import sys
 
-DISH_FILE = "data/generated_dishes.txt"
+exe_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
+config_file = os.path.join(exe_dir, "config.json")
 
-def ensure_dish_file_exists(file_path="data/generated_dishes.txt"):
+with open(config_file, "r") as f:
+    CONFIG = json.load(f)
+
+
+DISH_FILE = CONFIG["generated_dishes_path"]
+
+def ensure_dish_file_exists(file_path=CONFIG["generated_dishes_path"]):
     folder = os.path.dirname(file_path)
     if not os.path.exists(folder):
         os.makedirs(folder)  # ✅ Create the 'data/' folder if missing

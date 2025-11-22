@@ -1,3 +1,6 @@
+import json
+import os
+import sys
 import tkinter as tk
 from tkinter import ttk, messagebox
 import re
@@ -13,8 +16,16 @@ from modules.cost_calculator import calculate_total_cost
 from modules.recipe_logger import log_recipe
 from modules.recipe_parser import parse_gemini_response
 
-master_path = r"C:\Users\admin\Desktop\Reports\Recipe maker\ingredient_master.xlsx"
-DISH_FILE = r"C:\Users\admin\Desktop\PythonProjects\RecipeBot\ui\data\generated_dishes.txt"
+
+
+exe_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
+config_file = os.path.join(exe_dir, "config.json")
+
+with open(config_file, "r") as f:
+    CONFIG = json.load(f)
+
+master_path = CONFIG["master_path"]
+DISH_FILE = CONFIG["generated_dishes_path"]
 
 
 class RnDBotUI:
@@ -125,11 +136,11 @@ class RnDBotUI:
 
             if source == "Mistral":
                 raw_text = query_mistral(prompt)
-                target_path = r"C:\Users\admin\Desktop\Reports\Recipe maker\mistral_generated.xlsx"
+                target_path = CONFIG["mistral_generated_path"]
             else:
                 raw_text = query_gemini(prompt)
                 print("🧾 Raw Gemini response:\n", raw_text)
-                target_path = r"C:\Users\admin\Desktop\Reports\Recipe maker\gemini_generated.xlsx"
+                target_path = CONFIG["gemini_generated_path"]
 
             self.recipe = raw_text
 

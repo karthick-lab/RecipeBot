@@ -1,19 +1,15 @@
-
-
-
 from modules.dish_tracker import load_previous_dishes, save_new_dish
 
-# Load previously generated dishes
-previous_dishes = load_previous_dishes()
-
-
-
 def build_recipe_prompt(dish_type, key_ingredients, extra_ingredients, tray_size=None, verified_context=None):
+    # Always refresh previous dishes
+    previous_dishes = load_previous_dishes()
+
     tray_text = f"Use a tray size of {tray_size} if relevant." if tray_size else ""
     context_text = f"\nContextual guidance: {verified_context}" if verified_context else ""
 
     piece_based = [
-        "eggs", "egg", "banana", "bananas", "bread slice", "lemon", "paneer block", "chapati", "idli", "dosa"
+        "eggs", "egg", "banana", "bananas", "bread slice", "lemon",
+        "paneer block", "chapati", "idli", "dosa"
     ]
     piece_instruction = ", ".join(piece_based)
 
@@ -56,4 +52,5 @@ Steps:
 
 Seperate each section by !!!!!
 """
+
     return prompt.strip()
