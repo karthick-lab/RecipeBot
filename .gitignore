@@ -1,10 +1,9 @@
 # Ignore build artifacts
-build/
-*.pkg
 
-# Ignore Python cache
-__pycache__/
-*.pyc
+dist/
+build/*
+main_ui.spec/
 
-# Ignore environment files
-.env
+
+
+

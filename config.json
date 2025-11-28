@@ -1,0 +1,10 @@
+{
+  "master_path": "C:\\Users\\admin\\Desktop\\Reports\\Recipe maker\\ingredient_master.xlsx",
+  "generated_dishes_path": "C:\\Users\\admin\\Desktop\\Reports\\Recipe maker\\generated_dishes.txt",
+  "mistral_generated_path": "C:\\Users\\admin\\Desktop\\Reports\\Recipe maker\\mistral_generated.xlsx",
+  "gemini_generated_path": "C:\\Users\\admin\\Desktop\\Reports\\Recipe maker\\gemini_generated.xlsx",
+  "mistral_model": "C:\\Users\\admin\\Desktop\\Models\\mistral-7b-instruct-v0.2.Q5_K_S.gguf",
+  "gemini_model": "https://gemini.google.com/app"
+
+
+}
