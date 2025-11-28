@@ -4,7 +4,8 @@
   "mistral_generated_path": "C:\\Users\\admin\\Desktop\\Reports\\Recipe maker\\mistral_generated.xlsx",
   "gemini_generated_path": "C:\\Users\\admin\\Desktop\\Reports\\Recipe maker\\gemini_generated.xlsx",
   "mistral_model": "C:\\Users\\admin\\Desktop\\Models\\mistral-7b-instruct-v0.2.Q5_K_S.gguf",
-  "gemini_model": "https://gemini.google.com/app"
+  "gemini_model": "https://gemini.google.com/app",
+  "chromium_path": "C:/Users/admin/AppData/Local/ms-playwright/chromium-1187/chrome-win/chrome.exe"
 
 
 }

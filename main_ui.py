@@ -1,20 +1,17 @@
-import json
-import os
-import sys
 import tkinter as tk
 from tkinter import ttk, messagebox
 import re
 
-from modules.ingredient_loader import get_key_ingredients, strict_filter_by_dish_type
-from modules.dish_discovery import discover_dish_name
-from modules.prompt_builder import build_recipe_prompt
-from modules.verified_context_builder import build_verified_context
-from connectors.mistral_connector import query_mistral
-from connectors.gemini_connector import query_gemini
-from modules.ingredient_pricer import price_ingredients, simplify_name
-from modules.cost_calculator import calculate_total_cost
-from modules.recipe_logger import log_recipe
-from modules.recipe_parser import parse_gemini_response
+from ingredient_loader import get_key_ingredients, strict_filter_by_dish_type
+from dish_discovery import discover_dish_name
+from prompt_builder import build_recipe_prompt
+from verified_context_builder import build_verified_context
+#from mistral_connector import query_mistral
+from gemini_connector import query_gemini
+from ingredient_pricer import price_ingredients, simplify_name
+from cost_calculator import calculate_total_cost
+from recipe_logger import log_recipe
+from recipe_parser import parse_gemini_response
 from config_loader import load_config
 
 
@@ -56,7 +53,7 @@ class RnDBotUI:
         self.dish_type.set("Main dish")
 
         ttk.Label(form_frame, text="Model Source:").grid(row=1, column=0, padx=5, pady=5)
-        self.source_selector = ttk.Combobox(form_frame, values=["Mistral", "Gemini"], state="readonly")
+        self.source_selector = ttk.Combobox(form_frame, values=["Gemini"], state="readonly")
         self.source_selector.grid(row=1, column=1, padx=5)
         self.source_selector.set("Gemini")
 
@@ -132,7 +129,7 @@ class RnDBotUI:
             prompt = build_recipe_prompt(dish_type, key_ingredients, extra_ingredients, tray_size, verified_context)
 
             if source == "Mistral":
-                raw_text = query_mistral(prompt)
+                #raw_text = query_mistral(prompt)
                 target_path =CONFIG["mistral_generated_path"]
             else:
                 raw_text = query_gemini(prompt)
@@ -273,7 +270,7 @@ class RnDBotUI:
         )
 
         # ✅ Track dish name
-        from modules.dish_tracker import ensure_dish_file_exists, save_new_dish
+        from dish_tracker import ensure_dish_file_exists, save_new_dish
         ensure_dish_file_exists()
 
         dish_name = self.recipe_full_title.split("Title")[1].strip()

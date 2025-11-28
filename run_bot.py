@@ -1,5 +1,5 @@
 from tkinter import Tk
-from ui.main_ui import RnDBotUI
+from main_ui import RnDBotUI
 
 #test
 

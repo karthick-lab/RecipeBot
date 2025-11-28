@@ -1,4 +1,5 @@
-from modules.dish_tracker import load_previous_dishes, save_new_dish
+from dish_tracker import load_previous_dishes
+
 
 def build_recipe_prompt(dish_type, key_ingredients, extra_ingredients, tray_size=None, verified_context=None):
     # Always refresh previous dishes

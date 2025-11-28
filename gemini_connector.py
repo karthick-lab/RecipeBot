@@ -1,19 +1,19 @@
-import json
-import os
-import sys
-
 from playwright.sync_api import sync_playwright
-from modules.recipe_parser import parse_gemini_response
 import time
 
 # Start Playwright manually
-playwright = sync_playwright().start()
-browser = playwright.chromium.launch(headless=False)
-page = browser.new_page()
 
 from config_loader import load_config
 
 CONFIG = load_config()
+
+chromium_path=CONFIG["chromium_path"]
+playwright = sync_playwright().start()
+browser = playwright.chromium.launch(headless=False,executable_path=chromium_path)
+
+page = browser.new_page()
+
+
 
 
 def query_gemini(prompt):
