@@ -20,6 +20,7 @@ CONFIG = load_config()
 
 master_path = CONFIG["master_path"]
 DISH_FILE = CONFIG["generated_dishes_path"]
+dish_types = CONFIG["dish_types"]
 
 
 class RnDBotUI:
@@ -47,8 +48,15 @@ class RnDBotUI:
         form_frame.pack(pady=10)
 
         ttk.Label(form_frame, text="Type of Dish:").grid(row=0, column=0, padx=5, pady=5)
-        self.dish_type = ttk.Combobox(form_frame, values=["Main dish", "Side dish", "Dessert/Baking", "Snacks"],
+        self.dish_type = ttk.Combobox(form_frame, values=["Dessert/Baking","Main dish","Side dish", "Masala manufacturing", "Beverage powder manufacturing","Snacks"],
                                       state="readonly")
+
+        self.dish_type = ttk.Combobox(
+            form_frame,
+            values=dish_types,
+            state="readonly"
+        )
+
         self.dish_type.grid(row=0, column=1, padx=5)
         self.dish_type.set("Main dish")
 
