@@ -151,22 +151,43 @@ class RnDBotUI:
             self.recipe_title = re.sub(r'[\\/*?:\[\]]', '', header.strip().split("\n")[0])[:31]
             self.recipe_full_title = re.sub(r'[\\/*?:\[\]]', '', header.strip().split("\n")[0])
 
+
+
             def parse_ingredient_line(line):
                 line = line.strip()
+                if not line:
+                    return None
+
+                # Normalize spacing and remove extra symbols
+                line = re.sub(r"[!]+", "", line).strip()
+
+                # Case 1: colon-separated format (e.g., "300g : Prawn")
                 if ":" in line:
-                    name_raw, qty_raw = line.split(":", 1)
-                    name = simplify_name(name_raw)
-                    qty_raw = qty_raw.strip().lower()
-                    qty_match = re.search(r"[\d.]+", qty_raw)
-                    try:
-                        qty = float(qty_match.group()) if qty_match else 0.0
-                    except ValueError:
-                        print(f"❌ Could not convert quantity to float: '{qty_raw}'")
-                        qty = 0.0
-                    unit_match = re.search(r"(g|ml|pieces?|teaspoon|tablespoon)", qty_raw)
-                    unit = unit_match.group() if unit_match else "g"
+                    qty_part, name_part = line.split(":", 1)
+                    qty_part = qty_part.strip().lower()
+                    name = name_part.strip()
+
+                    # Extract quantity
+                    qty_match = re.search(r"[\d.]+", qty_part)
+                    qty = float(qty_match.group()) if qty_match else 0.0
+
+                    # Extract unit (default to 'pieces' if none found)
+                    unit_match = re.search(r"(g|ml|pieces?|teaspoon|tablespoon)", qty_part)
+                    unit = unit_match.group() if unit_match else "pieces"
+
                     return {"name": name, "qty": qty, "unit": unit}
-                return None
+
+                # Case 2: quantity-first without colon (e.g., "150g Mutton liver")
+                qty_match = re.search(r"[\d.]+", line)
+                qty = float(qty_match.group()) if qty_match else 0.0
+
+                unit_match = re.search(r"(g|ml|pieces?|teaspoon|tablespoon)", line.lower())
+                unit = unit_match.group() if unit_match else "pieces"
+
+                # Remove qty + unit from line to isolate name
+                name = re.sub(r"[\d.]+\s*(g|ml|pieces?|teaspoon|tablespoon)?", "", line, flags=re.IGNORECASE).strip()
+
+                return {"name": name, "qty": qty, "unit": unit}
 
             ingredient_lines = [line for line in ingredients_text.split("\n") if line.strip()]
             parsed_ingredients = [parse_ingredient_line(i) for i in ingredient_lines if parse_ingredient_line(i)]

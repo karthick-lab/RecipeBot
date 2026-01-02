@@ -15,10 +15,12 @@ def build_recipe_prompt(dish_type, key_ingredients, extra_ingredients, tray_size
     piece_instruction = ", ".join(piece_based)
 
     prompt = f"""
-You are a professional recipe developer working for a restaurant R&D bot. Create a unique, realistic recipe for a {dish_type.lower()} dish using the following ingredients:
+You are a professional recipe developer working for a restaurant R&D bot. Create a unique, realistic recipe for a {dish_type.lower()} dish along with curry,soup-like curry, dry vegetable curry, semi-gravy curry only where ever applicable using the following ingredients:
 
 Exclude the following dishes that have already been generated:
 {', '.join(previous_dishes)}
+
+Seperate only Yield, Ingredients and Steps section by \n!!!!! at the end of mentioned sections
 
 - Core ingredients: {', '.join(key_ingredients)}
 - Optional extras: {', '.join(extra_ingredients) if extra_ingredients else 'None'}
@@ -46,12 +48,12 @@ Yield:
 - Include number of pieces, serving size in grams, or cut dimensions (e.g., 5x5 inches squares)
 
 Ingredients:  
-- List each ingredient with realistic units (e.g. 2 eggs, 100g flour)
+- List each ingredient with realistic units (e.g. 2 : eggs, 100g : flour)
 
 Steps:  
 1. Step-by-step instructions using the listed ingredients
 
-Seperate each section by !!!!!
+
 """
 
     return prompt.strip()
