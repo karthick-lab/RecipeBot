@@ -21,22 +21,22 @@ def simplify_name(name):
 
     # Keyword-based overrides
     keyword_map = {
-        "rice": ["basmati", "long-grain", "short-grain", "steamed", "white rice", "brown rice"],
-        "oil": ["sunflower", "vegetable", "refined", "mustard", "canola", "olive"],
-        "salt": ["sea salt", "rock salt", "table salt"],
-        "sugar": ["brown sugar", "white sugar", "powdered sugar", "jaggery"],
-        "flour": ["maida", "atta", "whole wheat", "refined flour", "all-purpose"],
-        "chili": ["green chili", "red chili", "chilli", "chili powder"],
-        "onion": ["red onion", "white onion", "shallots"],
-        "tomato": ["roma tomato", "cherry tomato", "fresh tomato"],
-        "potato": ["baby potato", "sweet potato"],
-        "milk": ["whole milk", "skimmed milk", "toned milk"],
-        "curd": ["yogurt", "dahi"],
-        "bread": ["white bread", "brown bread", "bun", "roll"],
-        "egg": ["boiled egg", "whole egg", "egg white", "egg yolk"],
-        "dal": ["toor dal", "moong dal", "masoor dal", "chana dal"],
-        "garam masala": ["masala", "spice mix", "curry powder"],
-        "vegetables": ["mixed vegetables", "seasonal vegetables", "fresh vegetables"],
+        #"rice": ["basmati", "long-grain", "short-grain", "steamed", "white rice", "brown rice"],
+        #"oil": ["sunflower", "vegetable", "refined", "mustard", "canola", "olive"],
+        #"salt": ["sea salt", "rock salt", "table salt"],
+        #"sugar": ["brown sugar", "white sugar", "powdered sugar", "jaggery"],
+        #"flour": ["maida", "atta", "whole wheat", "refined flour", "all-purpose"],
+        #"chili": ["green chili", "red chili", "chilli", "chili powder"],
+        #"onion": ["red onion", "white onion", "shallots"],
+        #"tomato": ["roma tomato", "cherry tomato", "fresh tomato"],
+        #"potato": ["baby potato", "sweet potato"],
+        #"milk": ["whole milk", "skimmed milk", "toned milk"],
+        #"curd": ["yogurt", "dahi"],
+        #"bread": ["white bread", "brown bread", "bun", "roll"],
+        #"egg": ["boiled egg", "whole egg", "egg white", "egg yolk"],
+        #"dal": ["toor dal", "moong dal", "masoor dal", "chana dal"],
+        #"garam masala": ["masala", "spice mix", "curry powder"],
+        #"vegetables": ["mixed vegetables", "seasonal vegetables", "fresh vegetables"],
     }
 
     for canonical, variants in keyword_map.items():

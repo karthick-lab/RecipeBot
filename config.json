@@ -12,8 +12,18 @@
     "Side dish",
     "Masala manufacturing",
     "Beverage powder manufacturing",
-    "Snacks"
-  ]
+    "Snacks",
+    "Fruit juices",
+    "Breweries"
+  ],
+  "main_dish_prompt": "include dish along with curry,soup-like curry, dry vegetable curry, semi-gravy curry only where ever applicable and use only necessary ingredients (dont use any unnecessary ingredients for main dish) along with its expiry like 1 day or 2 days etc mentioned at the last step",
+  "masala_manufacturing_prompt": " like masala powders(sambar pwder, chilly powder, mutton masala, chicken masala etc), mixes for various culinary uses etc by picking only the necessary ingredients (dont use any unnecessary ingredients for masala powder manufacturing) along with its expiry like 6 months or 18 months etc mentioned at the last step",
+  "side_dish_prompt": "like chilly chicken, fish fry, mutton kheema, kabab, vegetable kuruma, mashroom chilly,califlower chilly, fried items, grilled items, roasted items, semi-gravy items, dry items etc by picking only the necessary ingredients (dont use any unnecessary ingredients for side dish) along with its expiry like 1 day or 2 days etc mentioned at the last step",
+  "beverage_powder_manufacturing_prompt": "like health mixes for chldren, health mixes for olderly, energy drinks, protein drinks etc by picking only the necessary ingredients (dont use any unnecessary ingredients for beverage powder manufacturing) along with its expiry like 6 months or 18 months etc mentioned at the last step",
+  "dessert_baking_prompt": "like cookies, brownies, cakes, traditional sweets, stuffed items like veg and nonveg puffs, veg and non veg samosas etc by picking only the necessary ingredients (dont use any unnecessary ingredients for dessert/baking) along with its expiry like 3 days or 5 days etc mentioned at the last step",
+  "snacks_prompt": "savaories, mixture, murukku, namkeen, fried snacks, roasted snacks, healthy snacks etc by picking only the necessary ingredients (dont use any unnecessary ingredients for snacks) along with its expiry like 3 months or 6 months etc mentioned at the last step",
+  "fruit_juices_prompt": "like mango juice, orange juice, mixed fruit juice, pomegranate juice, apple juice etc by picking only the necessary ingredients (dont use any unnecessary ingredients for fruit juices) along with its expiry like 6 months or 1 year etc mentioned at the last step",
+  "breweries_prompt": "like beers, wines, whiskeys, vodkas, rums etc by picking only the necessary ingredients (dont use any unnecessary ingredients for breweries) along with its expiry like 1 year or 5 years etc mentioned at the last step"
 
 
 

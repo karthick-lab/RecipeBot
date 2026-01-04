@@ -1,8 +1,22 @@
+from config_loader import load_config
 from dish_tracker import load_previous_dishes
 
 
 def build_recipe_prompt(dish_type, key_ingredients, extra_ingredients, tray_size=None, verified_context=None):
     # Always refresh previous dishes
+
+    CONFIG = load_config()
+
+    main_dish_prompt = CONFIG["main_dish_prompt"]
+    masala_manufacturing_prompt = CONFIG["masala_manufacturing_prompt"]
+    side_dish_prompt = CONFIG["side_dish_prompt"]
+    beverage_powder_manufacturing_prompt= CONFIG["beverage_powder_manufacturing_prompt"]
+    dessert_baking_prompt= CONFIG["dessert_baking_prompt"]
+    snacks_prompt = CONFIG["snacks_prompt"]
+    fruit_juices_prompt = CONFIG["fruit_juices_prompt"]
+    breweries_prompt = CONFIG["breweries_prompt"]
+
+
     previous_dishes = load_previous_dishes()
 
     tray_text = f"Use a tray size of {tray_size} if relevant." if tray_size else ""
@@ -13,14 +27,51 @@ def build_recipe_prompt(dish_type, key_ingredients, extra_ingredients, tray_size
         "paneer block", "chapati", "idli", "dosa"
     ]
     piece_instruction = ", ".join(piece_based)
+    extra_prompt=""
+    print("inside prompt builder"+dish_type)
+    if(dish_type=="Main dish"):
+        print("main dish identified")
+        extra_prompt=main_dish_prompt
+
+    elif(dish_type=="Masala manufacturing"):
+        print("masala manufacturing identified")
+        extra_prompt =masala_manufacturing_prompt
+
+    elif (dish_type == "Side dish"):
+        print("side dish identified")
+        extra_prompt = side_dish_prompt
+
+    elif (dish_type == "Beverage powder manufacturing"):
+        print("Beverage powder identified")
+        extra_prompt = beverage_powder_manufacturing_prompt
+
+    elif (dish_type == "Dessert/Baking"):
+        print("dessert/baking identified")
+        extra_prompt = dessert_baking_prompt
+
+
+    elif (dish_type == "Snacks"):
+        print("snacks identified")
+        extra_prompt = snacks_prompt
+
+
+    elif (dish_type == "Fruit juices"):
+        print("snacks identified")
+        extra_prompt = fruit_juices_prompt
+
+
+    elif (dish_type == "Breweries"):
+        print("snacks identified")
+        extra_prompt = breweries_prompt
 
     prompt = f"""
-You are a professional recipe developer working for a restaurant R&D bot. Create a unique, realistic recipe for a {dish_type.lower()} dish along with curry,soup-like curry, dry vegetable curry, semi-gravy curry only where ever applicable using the following ingredients:
+You are a professional recipe developer working for a restaurant R&D bot. Create a unique, realistic recipe for a {dish_type.lower()} {extra_prompt} using the following ingredients:
 
 Exclude the following dishes that have already been generated:
 {', '.join(previous_dishes)}
 
 Seperate only Yield, Ingredients and Steps section by \n!!!!! at the end of mentioned sections
+Use the same naming conventions as in Core ingredients and Optional extras below.
 
 - Core ingredients: {', '.join(key_ingredients)}
 - Optional extras: {', '.join(extra_ingredients) if extra_ingredients else 'None'}
